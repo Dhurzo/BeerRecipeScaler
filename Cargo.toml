@@ -1,0 +1,7 @@
+[package]
+name = "beer_recipe_scaler"
+version = "0.1.0"
+authors = ["Juan Ángel López <juancholo10@gmail.com>"]
+
+[dependencies]
+argparse = "*"
