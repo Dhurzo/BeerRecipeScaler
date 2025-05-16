@@ -1,40 +1,47 @@
 use std::fmt;
-use hop::Hop;
-use malt::Malt;
+use crate::hop::Hop;
+use crate::malt::Malt;
 
-/// Strut represents a beer recipe
-pub struct Recipe{
-    pub  name : String,
-    pub  original_volume: f32,
-    pub  final_volume : f32,
-    pub  hops : Vec<Hop>,
-    pub  malts : Vec<Malt>
+/// Represents a beer recipe.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Recipe {
+    pub name: String,
+    pub original_volume: f32,
+    pub final_volume: f32,
+    pub hops: Vec<Hop>,
+    pub malts: Vec<Malt>,
 }
 
-/// Instance new empty recipe
-pub fn new() -> Recipe
-{
-    Recipe {    
-        name : "".to_string(),
+/// Creates a new, empty Recipe instance.
+pub fn new() -> Recipe {
+    Recipe {
+        name: String::new(),
         original_volume: 0.0,
-        final_volume : 0.0,
-        hops : Vec::new(),
-        malts : Vec::new()
+        final_volume: 0.0,
+        hops: Vec::new(),
+        malts: Vec::new(),
     }
 }
- 
-impl fmt::Display for Recipe{
+
+impl fmt::Display for Recipe {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(
+            f,
+            "Recipe name: {}  Recipe scaled volume: {} Liters\n",
+            self.name.trim(),
+            self.final_volume
+        )?;
 
-        write!(f , "Recipe name :{}  Recipe scaled volume: {} Liters \n\n",self.name.trim(),self.final_volume);
-                
-        println!("=======MALTS======= \n\n");
-        for m in &self.malts{println!("{}",m);}
+        writeln!(f, "======= MALTS =======")?;
+        for m in &self.malts {
+            writeln!(f, "{}", m)?;
+        }
 
-        println!("=======HOPS======= \n\n");
-        for h in &self.hops{println!("{}",h);}
+        writeln!(f, "======= HOPS =======")?;
+        for h in &self.hops {
+            writeln!(f, "{}", h)?;
+        }
 
-        write!(f,"===================")
+        write!(f, "===================")
     }
-
 }

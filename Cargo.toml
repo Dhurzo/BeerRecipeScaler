@@ -1,7 +1,8 @@
 [package]
 name = "beer_recipe_scaler"
 version = "0.1.0"
-authors = ["Juan Ángel López <juancholo10@gmail.com>"]
+authors = ["Juan Ángel López"]
+edition = "2021"
 
 [dependencies]
-argparse = "*"
+clap = { version = "4.5", features = ["derive"] }

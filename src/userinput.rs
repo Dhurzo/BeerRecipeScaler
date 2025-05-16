@@ -1,125 +1,97 @@
 use std::io;
-use malt;
-use hop;
+use crate::malt;
+use crate::hop;
 
-/// Get beer recipe name from user
+/// Get beer recipe name from user.
 ///
-/// Return name : String
-pub fn get_recipe_name() -> String
-{
+/// Returns the recipe name as a trimmed String.
+pub fn get_recipe_name() -> String {
     let stdin = io::stdin();
     println!("Recipe name: ");
     let mut name = String::new();
-    stdin.read_line(&mut name);
-    name
+    stdin.read_line(&mut name).expect("Failed to read line");
+    name.trim().to_string()
 }
 
-/// Get float from user. (force type)
+/// Get a positive float from user input.
 ///
-/// value : f32
-///
-fn get_float() -> f32
-{   
+/// Keeps prompting until a valid positive float is entered.
+pub fn get_float() -> f32 {
     let stdin = io::stdin();
-    let mut value :f32 = -1.5;
-   
-    while value < 0.0
-    {
+    loop {
         let mut input = String::new();
-        stdin.read_line(&mut input);
-        value = match input.trim().parse::<f32>() {
-            Err(err)  => {println!("Please use float notation ex : 1.5");-1.5},
-            Ok(n) => {n},
-        };
+        stdin.read_line(&mut input).expect("Failed to read line");
+        match input.trim().parse::<f32>() {
+            Ok(n) if n >= 0.0 => return n,
+            _ => println!("Please use float notation, e.g., 1.5 (must be positive)"),
+        }
     }
-    
-    value
 }
 
-/// Get all recipe malts from user
+/// Get all recipe malts from user.
 ///
-/// malts_number : i32  -> Number of malts in the recipe
-///
-/// Return Vec<malt::Malt> -> Vector of malts
-pub fn get_malts(malts_number : i32) -> Vec<malt::Malt>
-{
+/// `malts_number`: Number of malts in the recipe.
+/// Returns a vector of `malt::Malt`.
+pub fn get_malts(malts_number: usize) -> Vec<malt::Malt> {
     let stdin = io::stdin();
     let mut malts = Vec::new();
- 
-    for i in 0..malts_number
-    {
 
+    for i in 0..malts_number {
         let mut input = String::new();
-        let mut float_input : f32 = 0.0;
         let mut malt = malt::new_malt();
 
-        println!("Malt number {}" ,i);
+        println!("Malt number {}", i + 1);
 
-        println!("Malt name :");
-        stdin.read_line(&mut input);
-        malt.name = input.clone();
-        input = "".to_string();
+        println!("Malt name:");
+        stdin.read_line(&mut input).expect("Failed to read line");
+        malt.name = input.trim().to_string();
 
-        println!("Original KG of malt : ");
-        float_input = get_float();
-        malt.original_kilos = float_input.clone();
+        println!("Original KG of malt:");
+        malt.original_kilos = get_float();
 
-        println!("Scaled KG of malt: (if you are scaling by volume fill with 0) ");
-        float_input = get_float();
-        malt.scaled_kilos =  float_input.clone();
+        println!("Scaled KG of malt (if you are scaling by volume, enter 0):");
+        malt.scaled_kilos = get_float();
 
-        malts.push(malt)
+        malts.push(malt);
     }
     malts
 }
 
-/// Get all recipe hops from user
+/// Get all recipe hops from user.
 ///
-/// hop_number : i32  -> Number of hops  in the recipe
-///
-/// Return Vec<malt::Hop> -> Vector of hops
-pub fn get_hops(hop_number : i32) -> Vec<hop::Hop>
-{
+/// `hop_number`: Number of hops in the recipe.
+/// Returns a vector of `hop::Hop`.
+pub fn get_hops(hop_number: usize) -> Vec<hop::Hop> {
     let stdin = io::stdin();
     let mut hops = Vec::new();
 
-    for i in 0..hop_number
-    {
+    for i in 0..hop_number {
         let mut input = String::new();
-        let mut float_input = 0.0;
         let mut hop = hop::new();
 
-        println!("Hop number {} \n" ,i);
+        println!("Hop number {}\n", i + 1);
 
-        println!("Hop name : ");
-        stdin.read_line(&mut input);
-        hop.name = input;
-        input = "".to_string();
+        println!("Hop name:");
+        stdin.read_line(&mut input).expect("Failed to read line");
+        hop.name = input.trim().to_string();
 
-        println!("Hop alfa acids : ");
-        float_input = get_float();
-        hop.alfa_acid = float_input.clone();
-        
+        println!("Hop alpha acids (%):");
+        hop.alfa_acid = get_float();
 
-        /*println!("Hop grams (fill with 0 if scalling by volume) : ");
-        float_input = get_float();
-        hop.grams = float_input.clone();*/
+        // Uncomment if you want to ask for grams:
+        // println!("Hop grams (fill with 0 if scaling by volume):");
+        // hop.grams = get_float();
 
-        println!("Hop ibus (original recipe) : ");
-        float_input = get_float();
-        hop.original_ibu = float_input.clone();
+        println!("Hop IBUs (original recipe):");
+        hop.original_ibu = get_float();
 
-        println!("Hop usage : ");
-        float_input = get_float();
-        hop.use_value = float_input.clone();
-        
-        println!("Hop add time : ");
-        float_input = get_float();
-        hop.add_time =  float_input.clone();
+        println!("Hop usage (utilization factor):");
+        hop.use_value = get_float();
 
+        println!("Hop add time (minutes):");
+        hop.add_time = get_float();
 
-        hops.push(hop)
+        hops.push(hop);
     }
     hops
 }
-
